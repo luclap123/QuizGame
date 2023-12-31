@@ -13,3 +13,10 @@ MonoBehaviour:
   m_Name: Question 1
   m_EditorClassIdentifier: 
   textQuestion: What are Scriptable Objects?
+  answer:
+  - a data container that you can use to save large amounts of data, independent
+    of class instances
+  - a variables
+  - all right
+  - All is incorrect
+  correctAnswerIndex: 0

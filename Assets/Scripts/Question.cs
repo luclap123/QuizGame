@@ -10,17 +10,17 @@ public class Question : ScriptableObject
     [SerializeField] string[] answer = new string[4];
     [SerializeField] int correctAnswerIndex;
 
-    public string getQuestion()
+    public string GetQuestion()
     {
         return textQuestion;
     }
 
-    public string getAnswer(int index)
+    public string GetAnswer(int index)
     {
         return answer[index];
     }
 
-    public int getCorrectAnswerIndex()
+    public int GetCorrectAnswerIndex()
     {
         return correctAnswerIndex;
     }

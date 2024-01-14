@@ -6,16 +6,41 @@ using UnityEngine.UI;
 using System;
 public class Quiz : MonoBehaviour
 {
+    [Header("Questions")]
     [SerializeField] TextMeshProUGUI textQuestions;
     [SerializeField] Question question;
+    [Header("Answers")]
     [SerializeField] GameObject[] answer;
     int correctAnswerIndex;
+    bool hasAnsweredEarly;
+    [Header("Show answers")]
     [SerializeField] Sprite defaultImageAnswer;
     [SerializeField] Sprite correctImageAnswer;
+    [Header("Time")]
+    [SerializeField] Image timerImage;
+    Timer timer;
     // Start is called before the first frame update
     void Start()
     {
-        DisplayQuestion();
+        timer = FindObjectOfType<Timer>();
+        OnNextQuestion();
+        // DisplayQuestion();
+    }
+
+    void Update()
+    {
+        timerImage.fillAmount = timer.fillFraction;
+        if (timer.loadNextQuestion)
+        {
+            hasAnsweredEarly = false; 
+            OnNextQuestion();
+            timer.loadNextQuestion = false;
+        }
+        else if (!hasAnsweredEarly && !timer.isAnsweringQuestion)
+        {
+            DisplayAnswer(-1);
+            SetButtonState(false);
+        }
     }
     void DisplayQuestion()
     {
@@ -33,6 +58,7 @@ public class Quiz : MonoBehaviour
     {
         SetButtonState(true);
         SetDefaultButtonSprite();
+        DisplayQuestion();
     }
 
     void SetDefaultButtonSprite()
@@ -46,6 +72,14 @@ public class Quiz : MonoBehaviour
     }
 
     public void OnAnswerSlected(int index)
+    {
+        hasAnsweredEarly = true;
+        DisplayAnswer(index);
+        SetButtonState(false);
+        timer.CancelTimer();
+    }
+
+    public void DisplayAnswer(int index)
     {
         Image buttonImg;
         if (index == question.GetCorrectAnswerIndex())
@@ -64,7 +98,6 @@ public class Quiz : MonoBehaviour
             buttonImg.sprite = defaultImageAnswer;
 
         }
-        SetButtonState(false);
     }
 
     void SetButtonState(bool state)

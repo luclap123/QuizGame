@@ -25,10 +25,18 @@ public class Quiz : MonoBehaviour
     [Header("Time")]
     [SerializeField] Image timerImage;
     Timer timer;
+
+    [Header("Score")]
+    [SerializeField] TextMeshProUGUI scoreTextMesh;
+    Score score;
+
+
+
     // Start is called before the first frame update
     void Start()
     {
         timer = FindObjectOfType<Timer>();
+        score = FindObjectOfType<Score>();
         // OnNextQuestion();
         // DisplayQuestion();
     }
@@ -68,6 +76,7 @@ public class Quiz : MonoBehaviour
             SetDefaultButtonSprite();
             GetRandomQuestion();
             DisplayQuestion();
+            score.IncrementQuestionSeen();
         }
 
     }
@@ -92,12 +101,13 @@ public class Quiz : MonoBehaviour
         }
     }
 
-    public void OnAnswerSlected(int index)
+    public void OnAnswerSelected(int index)
     {
         hasAnsweredEarly = true;
         DisplayAnswer(index);
         SetButtonState(false);
         timer.CancelTimer();
+        scoreTextMesh.text = "Score: "+score.ScoreMain()+"%";
     }
 
     public void DisplayAnswer(int index)
@@ -108,6 +118,7 @@ public class Quiz : MonoBehaviour
             textQuestions.text = "you chose correct answer";
             buttonImg = answer[index].GetComponent<Image>();
             buttonImg.sprite = correctImageAnswer;
+            score.IncrementCorrectAnswer();
         }
         else
         {

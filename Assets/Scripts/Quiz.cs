@@ -4,18 +4,24 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System;
+using Random = UnityEngine.Random;
+
 public class Quiz : MonoBehaviour
 {
     [Header("Questions")]
     [SerializeField] TextMeshProUGUI textQuestions;
-    [SerializeField] Question question;
+    [SerializeField] List<Question> questions = new List<Question>();
+    Question currentQuestion;
+
     [Header("Answers")]
     [SerializeField] GameObject[] answer;
     int correctAnswerIndex;
     bool hasAnsweredEarly;
+
     [Header("Show answers")]
     [SerializeField] Sprite defaultImageAnswer;
     [SerializeField] Sprite correctImageAnswer;
+
     [Header("Time")]
     [SerializeField] Image timerImage;
     Timer timer;
@@ -23,7 +29,7 @@ public class Quiz : MonoBehaviour
     void Start()
     {
         timer = FindObjectOfType<Timer>();
-        OnNextQuestion();
+        // OnNextQuestion();
         // DisplayQuestion();
     }
 
@@ -32,7 +38,7 @@ public class Quiz : MonoBehaviour
         timerImage.fillAmount = timer.fillFraction;
         if (timer.loadNextQuestion)
         {
-            hasAnsweredEarly = false; 
+            hasAnsweredEarly = false;
             OnNextQuestion();
             timer.loadNextQuestion = false;
         }
@@ -45,20 +51,35 @@ public class Quiz : MonoBehaviour
     void DisplayQuestion()
     {
         textQuestions.fontSize = 100;
-        textQuestions.text = question.GetQuestion();
+        textQuestions.text = currentQuestion.GetQuestion();
         for (int i = 0; i < answer.Length; i++)
         {
             TextMeshProUGUI textAnswer = answer[i].GetComponentInChildren<TextMeshProUGUI>();
-            textAnswer.text = question.GetAnswer(i);
+            textAnswer.text = currentQuestion.GetAnswer(i);
             textAnswer.color = Color.yellow;
         }
     }
 
     void OnNextQuestion()
     {
-        SetButtonState(true);
-        SetDefaultButtonSprite();
-        DisplayQuestion();
+        if (questions.Count > 0)
+        {
+            SetButtonState(true);
+            SetDefaultButtonSprite();
+            GetRandomQuestion();
+            DisplayQuestion();
+        }
+
+    }
+
+    void GetRandomQuestion()
+    {
+        int index = Random.Range(0, questions.Count);
+        currentQuestion = questions[index];
+        if (questions.Contains(currentQuestion))
+        {
+            questions.Remove(currentQuestion);
+        }
     }
 
     void SetDefaultButtonSprite()
@@ -82,7 +103,7 @@ public class Quiz : MonoBehaviour
     public void DisplayAnswer(int index)
     {
         Image buttonImg;
-        if (index == question.GetCorrectAnswerIndex())
+        if (index == currentQuestion.GetCorrectAnswerIndex())
         {
             textQuestions.text = "you chose correct answer";
             buttonImg = answer[index].GetComponent<Image>();
@@ -90,8 +111,8 @@ public class Quiz : MonoBehaviour
         }
         else
         {
-            correctAnswerIndex = question.GetCorrectAnswerIndex();
-            string textCorrectAnswer = question.GetAnswer(correctAnswerIndex);
+            correctAnswerIndex = currentQuestion.GetCorrectAnswerIndex();
+            string textCorrectAnswer = currentQuestion.GetAnswer(correctAnswerIndex);
             textQuestions.fontSize = 40;
             textQuestions.text = "You chose wrong answer, the answer was \n" + textCorrectAnswer;
             buttonImg = answer[correctAnswerIndex].GetComponent<Image>();

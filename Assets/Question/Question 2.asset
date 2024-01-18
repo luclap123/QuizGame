@@ -12,4 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2af6044db0ebba04b9b4fa16b1c759cc, type: 3}
   m_Name: Question 2
   m_EditorClassIdentifier: 
-  textQuestion: In Unity, what languages you can use?
+  textQuestion: "What is the primary programming language used in Unity for scripting?\r"
+  answer:
+  - Python
+  - C#
+  - Javascript
+  - C++
+  correctAnswerIndex: 1

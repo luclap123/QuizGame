@@ -30,6 +30,9 @@ public class Quiz : MonoBehaviour
     [SerializeField] TextMeshProUGUI scoreTextMesh;
     Score score;
 
+    [Header("Progress bar")]
+    [SerializeField] Slider progressBar;
+    [SerializeField] bool isCompleted;
 
 
     // Start is called before the first frame update
@@ -37,6 +40,9 @@ public class Quiz : MonoBehaviour
     {
         timer = FindObjectOfType<Timer>();
         score = FindObjectOfType<Score>();
+        progressBar.maxValue = questions.Count;
+        progressBar.value = 0;
+
         // OnNextQuestion();
         // DisplayQuestion();
     }
@@ -58,7 +64,7 @@ public class Quiz : MonoBehaviour
     }
     void DisplayQuestion()
     {
-        textQuestions.fontSize = 100;
+        textQuestions.fontSize = 50;
         textQuestions.text = currentQuestion.GetQuestion();
         for (int i = 0; i < answer.Length; i++)
         {
@@ -76,6 +82,7 @@ public class Quiz : MonoBehaviour
             SetDefaultButtonSprite();
             GetRandomQuestion();
             DisplayQuestion();
+            progressBar.value++;
             score.IncrementQuestionSeen();
         }
 
@@ -107,7 +114,12 @@ public class Quiz : MonoBehaviour
         DisplayAnswer(index);
         SetButtonState(false);
         timer.CancelTimer();
-        scoreTextMesh.text = "Score: "+score.ScoreMain()+"%";
+        scoreTextMesh.text = "Score: " + score.ScoreMain() + "%";
+
+        if (progressBar.value == progressBar.maxValue)
+        {
+            isCompleted = true;
+        }
     }
 
     public void DisplayAnswer(int index)
@@ -116,6 +128,7 @@ public class Quiz : MonoBehaviour
         if (index == currentQuestion.GetCorrectAnswerIndex())
         {
             textQuestions.text = "you chose correct answer";
+            textQuestions.fontSize = 50;
             buttonImg = answer[index].GetComponent<Image>();
             buttonImg.sprite = correctImageAnswer;
             score.IncrementCorrectAnswer();
@@ -124,7 +137,7 @@ public class Quiz : MonoBehaviour
         {
             correctAnswerIndex = currentQuestion.GetCorrectAnswerIndex();
             string textCorrectAnswer = currentQuestion.GetAnswer(correctAnswerIndex);
-            textQuestions.fontSize = 40;
+            textQuestions.fontSize = 50;
             textQuestions.text = "You chose wrong answer, the answer was \n" + textCorrectAnswer;
             buttonImg = answer[correctAnswerIndex].GetComponent<Image>();
             buttonImg.sprite = defaultImageAnswer;

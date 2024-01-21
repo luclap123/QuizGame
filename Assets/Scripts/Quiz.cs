@@ -114,7 +114,7 @@ public class Quiz : MonoBehaviour
         DisplayAnswer(index);
         SetButtonState(false);
         timer.CancelTimer();
-        scoreTextMesh.text = "Score: " + score.ScoreMain() + "%";
+        scoreTextMesh.text = "Score: " + score.Calculation() + "%";
 
         if (progressBar.value == progressBar.maxValue)
         {

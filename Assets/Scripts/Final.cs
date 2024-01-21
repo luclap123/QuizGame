@@ -9,12 +9,12 @@ public class Final : MonoBehaviour
     [SerializeField] TextMeshProUGUI showScore;
     Score score;
 
-    void Start()
+    void Awake()
     {
         score = FindObjectOfType<Score>();
     }
 
-    void finalScore()
+    public void finalScore()
     {
         showScore.text = "Your score is " + score.Calculation();
     }
